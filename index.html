@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prenotazione Evento</title>
+  <meta name="theme-color" content="#3a0a05" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e0c070;
+      --gold-dim: rgba(201,168,76,0.12);
+      --text: #f5f0e8;
+      --text-muted: #b8a898;
+      --card-bg: rgba(28, 12, 8, 0.78);
+      --card-border: rgba(180, 100, 50, 0.35);
+      --input-bg: rgba(18, 6, 3, 0.65);
+      --input-border: rgba(160, 80, 40, 0.4);
+      --input-focus: rgba(201,168,76,0.5);
+      --orange: #c85a20;
+      --orange-light: #e07030;
+      --radius: 4px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    button, label, input, textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 36px 16px 48px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+      padding-bottom: max(48px, env(safe-area-inset-bottom));
+      position: relative;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse 90% 70% at 30% 20%, #b84010 0%, transparent 60%),
+        radial-gradient(ellipse 70% 80% at 80% 60%, #7a1a05 0%, transparent 60%),
+        radial-gradient(ellipse 80% 90% at 50% 50%, #5c1008 0%, transparent 80%),
+        #3a0a05;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(10,2,0,0.45) 100%);
+      pointer-events: none;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 560px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .ornament-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .orn-line {
+      height: 1px;
+      width: 36px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .orn-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
+
+    .orn-diamond {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    .logo-script {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(3.5rem, 10vw, 5.5rem);
+      color: #ffffff;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .logo-date {
+      font-size: 0.7rem;
+      letter-spacing: 0.28em;
+      color: var(--gold-light);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .header h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .header p {
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(200,180,160,0.7);
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 40px 40px 36px;
+      position: relative;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,180,100,0.08);
+    }
+
+    /* ── FORM ── */
+    .form-group { margin-bottom: 24px; }
+
+    label {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      transition: color 0.2s;
+    }
+
+    .form-group:focus-within label { color: var(--gold-light); }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      outline: none;
+      transition: border-color 0.25s, background 0.25s;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    input[type="email"]:focus,
+    textarea:focus {
+      border-color: var(--input-focus);
+      background: rgba(30,10,5,0.8);
+    }
+
+    input::placeholder,
+    textarea::placeholder { color: rgba(160,130,110,0.5); }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 20px;
+    }
+
+    .section-divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    .section-title {
+      font-size: 0.63rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      white-space: nowrap;
+    }
+
+    /* ── TICKET TYPE CARDS ── */
+    .ticket-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .ticket-card {
+      background: rgba(10,3,1,0.3);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 22px 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s;
+      user-select: none;
+    }
+
+    .ticket-card:hover {
+      border-color: rgba(180,90,40,0.5);
+    }
+
+    .ticket-card.active {
+      border-color: rgba(180,90,40,0.7);
+      background: rgba(120,40,10,0.3);
+    }
+
+    .ticket-card i {
+      font-size: 1.6rem;
+      line-height: 1;
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+      transition: color 0.25s;
+    }
+
+    .ticket-card.active i {
+      color: var(--gold-light);
+    }
+
+    .t-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      display: block;
+      transition: color 0.25s;
+    }
+
+    .ticket-card.active .t-title {
+      color: var(--gold-light);
+    }
+
+    .t-sub {
+      font-size: 0.67rem;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* ── QUANTITY ── */
+    .quantity-group {
+      margin-top: 20px;
+    }
+
+    .quantity-inner {
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(10,3,1,0.4);
+    }
+
+    .quantity-inner > label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .qty-input-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .qty-btn {
+      width: 38px; height: 38px;
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--gold);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .qty-btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+    .qty-btn:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+    .qty-btn:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); }
+
+    #qty-display {
+      flex: 1;
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      border-left: none; border-right: none;
+      height: 38px;
+      line-height: 38px;
+      background: transparent;
+    }
+
+    .qty-note {
+      margin-top: 10px;
+      font-size: 0.67rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .qty-note span { color: var(--gold); }
+
+    /* ── EXTRA NAMES ── */
+    .extra-names-group {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: max-height 0.4s ease, opacity 0.35s ease, transform 0.35s ease, margin-top 0.3s ease;
+      margin-top: 0;
+    }
+
+    .extra-names-group.visible {
+      max-height: 800px;
+      opacity: 1;
+      transform: translateY(0);
+      margin-top: 20px;
+    }
+
+    .extra-person {
+      margin-bottom: 12px;
+    }
+
+    .extra-person:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── SUBMIT ── */
+    .submit-area { margin-top: 28px; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      transition: color 0.3s;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+
+    .btn-submit:hover::before { transform: scaleX(1); }
+    .btn-submit:hover { color: #1a0800; }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit:disabled::before { transform: scaleX(0) !important; }
+    .btn-submit span { position: relative; z-index: 1; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(28,12,8,0.95);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: .9rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 999;
+      white-space: nowrap;
+      backdrop-filter: blur(6px);
+    }
+
+    .toast.show { opacity: 1; }
+
+    /* ── SUCCESS OVERLAY ── */
+    .success-overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 70% at 30% 20%, #b84010 0%, transparent 60%),
+        radial-gradient(ellipse 70% 80% at 80% 60%, #7a1a05 0%, transparent 60%),
+        #3a0a05;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .success-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .success-diamond {
+      width: 80px;
+      height: 80px;
+      border: 1px solid rgba(201,168,76,0.5);
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .success-diamond::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(201,168,76,0.25);
+    }
+
+    .success-diamond-inner {
+      transform: rotate(-45deg);
+      font-size: 1.6rem;
+    }
+
+    .success-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 6vw, 2.6rem);
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-title em {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .success-subtitle {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .success-detail {
+      border: 1px solid rgba(180,100,50,0.35);
+      border-radius: var(--radius);
+      padding: 1.2rem 2rem;
+      color: var(--text);
+      font-size: 0.82rem;
+      line-height: 2;
+      backdrop-filter: blur(6px);
+      background: rgba(28,12,8,0.5);
+      max-width: 320px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .success-detail strong {
+      color: var(--gold-light);
+      font-weight: 500;
+    }
+
+    .success-new-btn {
+      padding: 14px 2rem;
+      border: 1px solid var(--gold);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .success-new-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+
+    .success-new-btn:hover::before { transform: scaleX(1); }
+    .success-new-btn:hover { color: #1a0800; }
+    .success-new-btn span { position: relative; z-index: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      .card { padding: 24px 18px 28px; }
+      .row { grid-template-columns: 1fr; gap: 0; }
+      .row .form-group:first-child { margin-bottom: 24px; }
+      .ticket-grid { grid-template-columns: 1fr; gap: 10px; }
+      input[type="text"],
+      input[type="tel"],
+      input[type="email"],
+      textarea { font-size: 16px; }
+      .qty-btn { width: 44px; height: 44px; }
+      #qty-display { height: 44px; line-height: 44px; }
+      .btn-submit { padding: 18px; }
+      .logo-script { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="ornament-top">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line r"></div>
+    </div>
+    <span class="logo-script">Serata d'Autunno</span>
+    <div class="logo-date">Sabato 15 Novembre 2025 · Ore 20:00</div>
+    <h1>Prenotazione <em>Evento</em></h1>
+    <p>Compila il modulo per confermare la tua presenza</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+
+    <!-- DATI REFERENTE -->
+    <div class="section-divider" style="margin-top:0;">
+      <div class="section-divider-line"></div>
+      <span class="section-title">Dati Referente</span>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Mario" />
+      </div>
+      <div class="form-group">
+        <label for="cognome">Cognome</label>
+        <input type="text" id="cognome" placeholder="Rossi" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Cellulare</label>
+      <input type="tel" id="telefono" placeholder="+39 000 000 0000" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Mail</label>
+      <input type="email" id="email" placeholder="nome@email.com" />
+    </div>
+
+    <!-- TIPO PRENOTAZIONE -->
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <span class="section-title">Tipo Prenotazione</span>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="ticket-grid">
+      <div class="ticket-card active" id="standard-card" onclick="selectType('standard')">
+        <i class="ti ti-ticket"></i>
+        <span class="t-title">Ticket Standard</span>
+        <span class="t-sub">1 – 10 persone</span>
+      </div>
+      <div class="ticket-card" id="tavolo-card" onclick="selectType('tavolo')">
+        <i class="ti ti-users"></i>
+        <span class="t-title">Tavolo</span>
+        <span class="t-sub">4 – 50 persone</span>
+      </div>
+    </div>
+
+    <!-- QUANTITÀ -->
+    <div class="quantity-group">
+      <div class="quantity-inner">
+        <label>Numero Persone</label>
+        <div class="qty-input-row">
+          <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+          <div id="qty-display">1</div>
+          <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+        <p class="qty-note">
+          <span>*</span> La prenotazione è valida per il numero di persone indicate.
+        </p>
+      </div>
+    </div>
+
+    <!-- NOMI EXTRA (solo Ticket Standard con più di 1 persona) -->
+    <div class="extra-names-group" id="extra-names-group">
+      <div class="section-divider" style="margin-top:0;">
+        <div class="section-divider-line"></div>
+        <span class="section-title">Partecipanti Extra</span>
+        <div class="section-divider-line"></div>
+      </div>
+      <div id="extra-fields"></div>
+    </div>
+
+    <!-- NOTE -->
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <span class="section-title">Note</span>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="form-group" style="margin-bottom:0;">
+      <textarea id="note" placeholder="Eventuali richieste o informazioni aggiuntive…"></textarea>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">
+        <span id="btn-label">Conferma Prenotazione</span>
+      </button>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /wrapper -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-diamond">
+    <div class="success-diamond-inner">✦</div>
+  </div>
+  <div class="success-title">Prenotazione<br><em>Confermata</em></div>
+  <div class="success-subtitle">La tua richiesta è stata ricevuta</div>
+  <div class="success-detail" id="success-detail"></div>
+  <button class="success-new-btn" onclick="resetForm()">
+    <span>+ Nuova Prenotazione</span>
+  </button>
+</div>
+
+<script>
+  let tipo = 'standard';
+  let qty  = 1;
+
+  /* ── Selezione tipo ── */
+  function selectType(t) {
+    tipo = t;
+    document.getElementById('standard-card').classList.toggle('active', t === 'standard');
+    document.getElementById('tavolo-card').classList.toggle('active', t === 'tavolo');
+    qty = (t === 'standard') ? 1 : 4;
+    document.getElementById('qty-display').textContent = qty;
+    updateExtraFields();
+  }
+
+  /* ── Counter ── */
+  function changeQty(delta) {
+    const min = tipo === 'standard' ? 1 : 4;
+    const max = tipo === 'standard' ? 10 : 50;
+    qty = Math.min(max, Math.max(min, qty + delta));
+    document.getElementById('qty-display').textContent = qty;
+    updateExtraFields();
+  }
+
+  /* ── Campi extra (solo Standard > 1 persona) ── */
+  function updateExtraFields() {
+    const group  = document.getElementById('extra-names-group');
+    const fields = document.getElementById('extra-fields');
+    fields.innerHTML = '';
+
+    if (tipo === 'standard' && qty > 1) {
+      for (let i = 2; i <= qty; i++) {
+        fields.innerHTML += `
+          <div class="extra-person form-group">
+            <label>Nome e Cognome · Ticket ${i}</label>
+            <input type="text" class="extra-name" placeholder="Es. Giulia Bianchi" />
+          </div>`;
+      }
+      group.classList.add('visible');
+    } else {
+      group.classList.remove('visible');
+    }
+  }
+
+  /* ── Toast ── */
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  /* ── Submit ── */
+  async function submitForm() {
+    const nome     = document.getElementById('nome').value.trim();
+    const cognome  = document.getElementById('cognome').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const note     = document.getElementById('note').value.trim();
+
+    if (!nome || !cognome || !telefono || !email) {
+      showToast('Compila tutti i campi obbligatori');
+      return;
+    }
+
+    let extraNames = [];
+    if (tipo === 'standard' && qty > 1) {
+      const inputs = document.querySelectorAll('.extra-name');
+      for (const input of inputs) {
+        if (!input.value.trim()) {
+          showToast('Compila tutti i nomi aggiuntivi');
+          return;
+        }
+        extraNames.push(input.value.trim());
+      }
+    }
+
+    const btn   = document.getElementById('btn-submit');
+    const label = document.getElementById('btn-label');
+    btn.disabled = true;
+    label.textContent = 'Invio in corso…';
+
+    try {
+      const formData = new FormData();
+      formData.append('tipo',       tipo);
+      formData.append('qty',        qty);
+      formData.append('nome',       nome);
+      formData.append('cognome',    cognome);
+      formData.append('telefono',   telefono);
+      formData.append('email',      email);
+      formData.append('note',       note);
+      formData.append('extraNames', JSON.stringify(extraNames));
+
+      await fetch('https://script.google.com/macros/s/AKfycbzb6D7ofUWOrj41f9_Fr5i6l3XjCtCykRjAxsmQVub0YdZpZobKea5Y3xbCf4J__HSh/exec', {
+        method: 'POST',
+        mode:   'no-cors',
+        body:   formData
+      });
+    } catch (err) {
+      console.warn(err);
+    }
+
+    /* Success overlay */
+    const tipoLabel = tipo === 'standard' ? 'Ticket Standard' : 'Tavolo';
+    document.getElementById('success-detail').innerHTML =
+      `<strong>Referente:</strong> ${nome} ${cognome}<br>` +
+      `<strong>Tipo:</strong> ${tipoLabel}<br>` +
+      `<strong>Persone:</strong> ${qty}`;
+    document.getElementById('success-overlay').classList.add('show');
+
+    btn.disabled = false;
+    label.textContent = 'Conferma Prenotazione';
+  }
+
+  /* ── Reset ── */
+  function resetForm() {
+    document.getElementById('success-overlay').classList.remove('show');
+    ['nome','cognome','telefono','email','note'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    selectType('standard');
+  }
+
+  /* Init */
+  updateExtraFields();
+</script>
+
+</body>
+</html>
