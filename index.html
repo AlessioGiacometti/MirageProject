@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prenotazione Evento</title>
+  <title>Mirage — Registrazione Evento</title>
   <meta name="theme-color" content="#3a0a05" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-
   <style>
     :root {
       --gold: #c9a84c;
@@ -171,7 +169,6 @@
     .form-group:focus-within label { color: var(--gold-light); }
 
     input[type="text"],
-    input[type="tel"],
     input[type="email"],
     textarea {
       width: 100%;
@@ -194,7 +191,6 @@
     }
 
     input[type="text"]:focus,
-    input[type="tel"]:focus,
     input[type="email"]:focus,
     textarea:focus {
       border-color: var(--input-focus);
@@ -232,73 +228,132 @@
       white-space: nowrap;
     }
 
-    /* ── TICKET TYPE CARDS ── */
-    .ticket-grid {
+    /* ── ACCESS OPTIONS ── */
+    .access-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 16px;
     }
 
-    .ticket-card {
-      background: rgba(10,3,1,0.3);
+    .access-option { position: relative; }
+
+    .access-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .access-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 22px 12px;
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 22px 12px;
       cursor: pointer;
-      text-align: center;
+      text-transform: none;
+      letter-spacing: 0.03em;
+      font-size: 0.82rem;
+      color: var(--text-muted);
       transition: all 0.25s;
+      text-align: center;
+      line-height: 1.3;
       user-select: none;
+      background: rgba(10,3,1,0.3);
     }
 
-    .ticket-card:hover {
-      border-color: rgba(180,90,40,0.5);
-    }
-
-    .ticket-card.active {
-      border-color: rgba(180,90,40,0.7);
-      background: rgba(120,40,10,0.3);
-    }
-
-    .ticket-card i {
+    .access-option label .icon {
       font-size: 1.6rem;
       line-height: 1;
-      display: block;
-      margin-bottom: 10px;
-      color: var(--text-muted);
-      transition: color 0.25s;
     }
 
-    .ticket-card.active i {
-      color: var(--gold-light);
-    }
-
-    .t-title {
+    .access-option label .opt-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.1rem;
       font-weight: 600;
       letter-spacing: 0.05em;
       color: var(--text);
       display: block;
-      transition: color 0.25s;
     }
 
-    .ticket-card.active .t-title {
+    .access-option label .opt-sub {
+      font-size: 0.67rem;
+      letter-spacing: 0.05em;
+      display: block;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .access-option input[type="radio"]:checked + label {
+      border-color: rgba(180,90,40,0.7);
+      background: rgba(120,40,10,0.3);
+    }
+
+    .access-option input[type="radio"]:checked + label .opt-title {
       color: var(--gold-light);
     }
 
-    .t-sub {
-      font-size: 0.67rem;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      display: block;
-      margin-top: 4px;
-      line-height: 1.4;
+    .access-option label:hover {
+      border-color: rgba(180,90,40,0.5);
+      color: var(--text);
+    }
+
+    /* ── TAVOLO NOTICE BANNER ── */
+    .tavolo-notice {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(120, 40, 10, 0.5);
+      border: 1px solid rgba(180, 80, 30, 0.4);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 4px;
+    }
+
+    .tavolo-notice .notice-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      color: var(--gold-light);
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .tavolo-notice p {
+      font-size: 0.78rem;
+      color: rgba(220,200,180,0.9);
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+    }
+
+    .tavolo-notice p strong {
+      color: var(--orange-light);
+      font-weight: 500;
     }
 
     /* ── QUANTITY ── */
     .quantity-group {
       margin-top: 20px;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: max-height 0.4s ease, opacity 0.35s ease, transform 0.35s ease, margin-top 0.3s ease;
+    }
+
+    .quantity-group.visible {
+      max-height: 200px;
+      opacity: 1;
+      transform: translateY(0);
+      margin-top: 16px;
     }
 
     .quantity-inner {
@@ -308,7 +363,7 @@
       background: rgba(10,3,1,0.4);
     }
 
-    .quantity-inner > label {
+    .quantity-inner label {
       font-size: 0.65rem;
       letter-spacing: 0.18em;
       color: var(--text-muted);
@@ -359,31 +414,6 @@
 
     .qty-note span { color: var(--gold); }
 
-    /* ── EXTRA NAMES ── */
-    .extra-names-group {
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transform: translateY(-8px);
-      transition: max-height 0.4s ease, opacity 0.35s ease, transform 0.35s ease, margin-top 0.3s ease;
-      margin-top: 0;
-    }
-
-    .extra-names-group.visible {
-      max-height: 800px;
-      opacity: 1;
-      transform: translateY(0);
-      margin-top: 20px;
-    }
-
-    .extra-person {
-      margin-bottom: 12px;
-    }
-
-    .extra-person:last-child {
-      margin-bottom: 0;
-    }
-
     /* ── SUBMIT ── */
     .submit-area { margin-top: 28px; }
 
@@ -420,28 +450,6 @@
     .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-submit:disabled::before { transform: scaleX(0) !important; }
     .btn-submit span { position: relative; z-index: 1; }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(28,12,8,0.95);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: .9rem 1.5rem;
-      border-radius: var(--radius);
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 999;
-      white-space: nowrap;
-      backdrop-filter: blur(6px);
-    }
-
-    .toast.show { opacity: 1; }
 
     /* ── SUCCESS OVERLAY ── */
     .success-overlay {
@@ -569,9 +577,8 @@
       .card { padding: 24px 18px 28px; }
       .row { grid-template-columns: 1fr; gap: 0; }
       .row .form-group:first-child { margin-bottom: 24px; }
-      .ticket-grid { grid-template-columns: 1fr; gap: 10px; }
+      .access-options { grid-template-columns: 1fr; gap: 10px; }
       input[type="text"],
-      input[type="tel"],
       input[type="email"],
       textarea { font-size: 16px; }
       .qty-btn { width: 44px; height: 44px; }
@@ -593,248 +600,183 @@
       <div class="orn-line r"></div>
     </div>
     <span class="logo-script">Mirage</span>
-    <div class="logo-date">Venerdì 29 Maggio · Ore 18:00</div>
-    <h1>Prenotazione <em>Evento</em></h1>
+    <div class="logo-date">29.05.2026</div>
+    <h1>Registrazione <em>Evento</em></h1>
     <p>Compila il modulo per confermare la tua presenza</p>
   </div>
 
   <!-- CARD -->
   <div class="card">
+    <form id="reg-form" novalidate>
 
-    <!-- DATI REFERENTE -->
-    <div class="section-divider" style="margin-top:0;">
-      <div class="section-divider-line"></div>
-      <span class="section-title">Dati Referente</span>
-      <div class="section-divider-line"></div>
-    </div>
-
-    <div class="row">
-      <div class="form-group">
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" placeholder="Mario" />
-      </div>
-      <div class="form-group">
-        <label for="cognome">Cognome</label>
-        <input type="text" id="cognome" placeholder="Rossi" />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="telefono">Cellulare</label>
-      <input type="tel" id="telefono" placeholder="+39 000 000 0000" />
-    </div>
-
-    <div class="form-group">
-      <label for="email">Mail</label>
-      <input type="email" id="email" placeholder="nome@email.com" />
-    </div>
-
-    <!-- TIPO PRENOTAZIONE -->
-    <div class="section-divider">
-      <div class="section-divider-line"></div>
-      <span class="section-title">Tipo Prenotazione</span>
-      <div class="section-divider-line"></div>
-    </div>
-
-    <div class="ticket-grid">
-      <div class="ticket-card active" id="standard-card" onclick="selectType('standard')">
-        <i class="ti ti-ticket"></i>
-        <span class="t-title">Ticket Standard</span>
-        <span class="t-sub">1 – 10 persone</span>
-      </div>
-      <div class="ticket-card" id="tavolo-card" onclick="selectType('tavolo')">
-        <i class="ti ti-users"></i>
-        <span class="t-title">Tavolo</span>
-        <span class="t-sub">4 – 50 persone</span>
-      </div>
-    </div>
-
-    <!-- QUANTITÀ -->
-    <div class="quantity-group">
-      <div class="quantity-inner">
-        <label>Numero Persone</label>
-        <div class="qty-input-row">
-          <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
-          <div id="qty-display">1</div>
-          <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+      <!-- NOME / COGNOME -->
+      <div class="row">
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" placeholder="Mario" required />
         </div>
-        <p class="qty-note">
-          <span>*</span> La prenotazione è valida per il numero di persone indicate.
-        </p>
+        <div class="form-group">
+          <label for="cognome">Cognome</label>
+          <input type="text" id="cognome" placeholder="Rossi" required />
+        </div>
       </div>
-    </div>
 
-    <!-- NOMI EXTRA (solo Ticket Standard con più di 1 persona) -->
-    <div class="extra-names-group" id="extra-names-group">
-      <div class="section-divider" style="margin-top:0;">
+      <!-- MAIL -->
+      <div class="form-group">
+        <label for="email">Mail</label>
+        <input type="email" id="email" placeholder="nome@email.com" />
+      </div>
+
+      <!-- SECTION TITLE -->
+      <div class="section-divider">
         <div class="section-divider-line"></div>
-        <span class="section-title">Partecipanti Extra</span>
+        <span class="section-title">Modalità d'ingresso</span>
         <div class="section-divider-line"></div>
       </div>
-      <div id="extra-fields"></div>
-    </div>
 
-    <!-- NOTE -->
-    <div class="section-divider">
-      <div class="section-divider-line"></div>
-      <span class="section-title">Note</span>
-      <div class="section-divider-line"></div>
-    </div>
+      <!-- OPTIONS -->
+      <div class="access-options">
+        <div class="access-option">
+          <input type="radio" name="ingresso" id="opt-tavolo" value="tavolo" />
+          <label for="opt-tavolo">
+            <span class="icon">🍽️</span>
+            <span class="opt-title">Con Tavolo</span>
+            <span class="opt-sub">Ingresso con prenotazione tavolo</span>
+          </label>
+        </div>
+        <div class="access-option">
+          <input type="radio" name="ingresso" id="opt-semplice" value="semplice" />
+          <label for="opt-semplice">
+            <span class="icon">🎟️</span>
+            <span class="opt-title">Semplice</span>
+            <span class="opt-sub">Ingresso libero senza tavolo</span>
+          </label>
+        </div>
+      </div>
 
-    <div class="form-group" style="margin-bottom:0;">
-      <textarea id="note" placeholder="Eventuali richieste o informazioni aggiuntive…"></textarea>
-    </div>
+      <!-- NOTICE BANNER -->
+      <div class="tavolo-notice">
+        <div class="notice-icon">🕐</div>
+        <p>Il tavolo è riservato esclusivamente agli ospiti che arriveranno <strong>entro le 21:00.</strong></p>
+      </div>
 
-    <!-- SUBMIT -->
-    <div class="submit-area">
-      <button type="button" class="btn-submit" id="btn-submit" onclick="submitForm()">
-        <span id="btn-label">Conferma Prenotazione</span>
-      </button>
-    </div>
+      <!-- QUANTITY (hidden until option selected) -->
+      <div class="quantity-group" id="qty-group">
+        <div class="quantity-inner">
+          <label>Quanti siete?</label>
+          <div class="qty-input-row">
+            <button type="button" class="qty-btn" id="qty-minus">−</button>
+            <div id="qty-display">1</div>
+            <button type="button" class="qty-btn" id="qty-plus">+</button>
+          </div>
+          <p class="qty-note">
+            <span>*</span> La registrazione effettuata è valida per il numero di persone indicate.
+          </p>
+        </div>
+      </div>
 
-  </div><!-- /card -->
-</div><!-- /wrapper -->
+      <!-- NOTE -->
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-title">Note</span>
+        <div class="section-divider-line"></div>
+      </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+      <div class="form-group" style="margin-bottom: 0;">
+        <textarea id="note" placeholder="Eventuali richieste o informazioni aggiuntive…"></textarea>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="submit-area">
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span id="btn-label">Conferma Registrazione</span>
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
 
 <!-- SUCCESS OVERLAY -->
 <div class="success-overlay" id="success-overlay">
   <div class="success-diamond">
     <div class="success-diamond-inner">✦</div>
   </div>
-  <div class="success-title">Prenotazione<br><em>Confermata</em></div>
-  <div class="success-subtitle">La tua richiesta è stata ricevuta</div>
+  <div class="success-title">Registrazione<br><em>Confermata</em></div>
+  <div class="success-subtitle">La tua presenza è stata registrata</div>
   <div class="success-detail" id="success-detail"></div>
-  <button class="success-new-btn" onclick="resetForm()">
-    <span>+ Nuova Prenotazione</span>
+  <button class="success-new-btn" id="success-new-btn">
+    <span>+ Nuova Registrazione</span>
   </button>
 </div>
 
 <script>
-  let tipo = 'standard';
-  let qty  = 1;
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzb6D7ofUWOrj41f9_Fr5i6l3XjCtCykRjAxsmQVub0YdZpZobKea5Y3xbCf4J__HSh/exec';
 
-  /* ── Selezione tipo ── */
-  function selectType(t) {
-    tipo = t;
-    document.getElementById('standard-card').classList.toggle('active', t === 'standard');
-    document.getElementById('tavolo-card').classList.toggle('active', t === 'tavolo');
-    qty = (t === 'standard') ? 1 : 4;
-    document.getElementById('qty-display').textContent = qty;
-    updateExtraFields();
-  }
+  const radios   = document.querySelectorAll('input[name="ingresso"]');
+  const qtyGroup = document.getElementById('qty-group');
+  const qtyMinus = document.getElementById('qty-minus');
+  const qtyPlus  = document.getElementById('qty-plus');
+  const qtyDisp  = document.getElementById('qty-display');
+  const btnSubmit = document.getElementById('btn-submit');
+  const btnLabel  = document.getElementById('btn-label');
+  let qty = 1;
 
-  /* ── Counter ── */
-  function changeQty(delta) {
-    const min = tipo === 'standard' ? 1 : 4;
-    const max = tipo === 'standard' ? 10 : 50;
-    qty = Math.min(max, Math.max(min, qty + delta));
-    document.getElementById('qty-display').textContent = qty;
-    updateExtraFields();
-  }
+  radios.forEach(r => r.addEventListener('change', () => qtyGroup.classList.add('visible')));
 
-  /* ── Campi extra (solo Standard > 1 persona) ── */
-  function updateExtraFields() {
-    const group  = document.getElementById('extra-names-group');
-    const fields = document.getElementById('extra-fields');
-    fields.innerHTML = '';
+  qtyMinus.addEventListener('click', () => { if (qty > 1)  { qty--; qtyDisp.textContent = qty; } });
+  qtyPlus.addEventListener('click',  () => { if (qty < 99) { qty++; qtyDisp.textContent = qty; } });
 
-    if (tipo === 'standard' && qty > 1) {
-      for (let i = 2; i <= qty; i++) {
-        fields.innerHTML += `
-          <div class="extra-person form-group">
-            <label>Nome e Cognome · Ticket ${i}</label>
-            <input type="text" class="extra-name" placeholder="Es. Giulia Bianchi" />
-          </div>`;
-      }
-      group.classList.add('visible');
-    } else {
-      group.classList.remove('visible');
-    }
-  }
-
-  /* ── Toast ── */
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2800);
-  }
-
-  /* ── Submit ── */
-  async function submitForm() {
+  document.getElementById('reg-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
     const nome     = document.getElementById('nome').value.trim();
     const cognome  = document.getElementById('cognome').value.trim();
-    const telefono = document.getElementById('telefono').value.trim();
     const email    = document.getElementById('email').value.trim();
     const note     = document.getElementById('note').value.trim();
+    const ingressoEl = document.querySelector('input[name="ingresso"]:checked');
 
-    if (!nome || !cognome || !telefono || !email) {
-      showToast('Compila tutti i campi obbligatori');
-      return;
-    }
+    if (!nome || !cognome) { alert('Per favore, inserisci nome e cognome.'); return; }
+    if (!ingressoEl) { alert("Per favore, seleziona la modalità d'ingresso."); return; }
 
-    let extraNames = [];
-    if (tipo === 'standard' && qty > 1) {
-      const inputs = document.querySelectorAll('.extra-name');
-      for (const input of inputs) {
-        if (!input.value.trim()) {
-          showToast('Compila tutti i nomi aggiuntivi');
-          return;
-        }
-        extraNames.push(input.value.trim());
-      }
-    }
-
-    const btn   = document.getElementById('btn-submit');
-    const label = document.getElementById('btn-label');
-    btn.disabled = true;
-    label.textContent = 'Invio in corso…';
+    const tipoIngresso = ingressoEl.value === 'tavolo' ? 'con tavolo' : 'semplice';
+    const tipoSheet    = ingressoEl.value === 'tavolo' ? 'tavolo' : 'lista';
+    btnSubmit.disabled = true;
+    btnLabel.textContent = 'Invio in corso…';
 
     try {
       const formData = new FormData();
-      formData.append('tipo',       tipo);
-      formData.append('qty',        qty);
       formData.append('nome',       nome);
       formData.append('cognome',    cognome);
-      formData.append('telefono',   telefono);
       formData.append('email',      email);
+      formData.append('tipo',       tipoSheet);
+      formData.append('qty',        qty);
       formData.append('note',       note);
-      formData.append('extraNames', JSON.stringify(extraNames));
 
-      await fetch('https://script.google.com/macros/s/AKfycbzb6D7ofUWOrj41f9_Fr5i6l3XjCtCykRjAxsmQVub0YdZpZobKea5Y3xbCf4J__HSh/exec', {
+      await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         mode:   'no-cors',
         body:   formData
       });
-    } catch (err) {
-      console.warn(err);
-    }
+    } catch (err) { console.warn(err); }
 
-    /* Success overlay */
-    const tipoLabel = tipo === 'standard' ? 'Ticket Standard' : 'Tavolo';
     document.getElementById('success-detail').innerHTML =
-      `<strong>Referente:</strong> ${nome} ${cognome}<br>` +
-      `<strong>Tipo:</strong> ${tipoLabel}<br>` +
+      `<strong>Nome:</strong> ${nome} ${cognome}<br>` +
+      `<strong>Ingresso:</strong> ${tipoIngresso}<br>` +
       `<strong>Persone:</strong> ${qty}`;
+
     document.getElementById('success-overlay').classList.add('show');
+    btnSubmit.disabled = false;
+    btnLabel.textContent = 'Conferma Registrazione';
+  });
 
-    btn.disabled = false;
-    label.textContent = 'Conferma Prenotazione';
-  }
-
-  /* ── Reset ── */
-  function resetForm() {
+  document.getElementById('success-new-btn').addEventListener('click', function() {
     document.getElementById('success-overlay').classList.remove('show');
-    ['nome','cognome','telefono','email','note'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-    selectType('standard');
-  }
-
-  /* Init */
-  updateExtraFields();
+    document.getElementById('reg-form').reset();
+    qty = 1;
+    qtyDisp.textContent = qty;
+    qtyGroup.classList.remove('visible');
+  });
 </script>
 
 </body>
