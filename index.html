@@ -2,782 +2,363 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0", user-scalable=no" />
-  <title>Mirage — Registrazione Evento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mirage — Bologna</title>
   <meta name="theme-color" content="#3a0a05" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link href="design-system/mirage.css" rel="stylesheet" />
   <style>
-    :root {
-      --gold: #c9a84c;
-      --gold-light: #e0c070;
-      --gold-dim: rgba(201,168,76,0.12);
-      --text: #f5f0e8;
-      --text-muted: #b8a898;
-      --card-bg: rgba(28, 12, 8, 0.78);
-      --card-border: rgba(180, 100, 50, 0.35);
-      --input-bg: rgba(18, 6, 3, 0.65);
-      --input-border: rgba(160, 80, 40, 0.4);
-      --input-focus: rgba(201,168,76,0.5);
-      --orange: #c85a20;
-      --orange-light: #e07030;
-      --radius: 4px;
-    }
+    /* ── Layout homepage (specifico di questa pagina) ── */
+    body.home { padding: 0; display: block; }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    button, label, input, textarea {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-
-    body {
-      color: var(--text);
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
-      min-height: 100vh;
-      min-height: 100svh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 36px 16px 48px;
-      padding-left: max(16px, env(safe-area-inset-left));
-      padding-right: max(16px, env(safe-area-inset-right));
-      padding-bottom: max(48px, env(safe-area-inset-bottom));
-      position: relative;
-      overflow-x: hidden;
+    /* Sfondo ember fisso, copre tutto lo scroll */
+    .bg-fixed {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 90% 70% at 30% 20%, #b84010 0%, transparent 60%),
-        radial-gradient(ellipse 70% 80% at 80% 60%, #7a1a05 0%, transparent 60%),
-        radial-gradient(ellipse 80% 90% at 50% 50%, #5c1008 0%, transparent 80%),
-        #3a0a05;
+        radial-gradient(ellipse 90% 70% at 30% 12%, var(--ember-1) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 80% at 82% 70%, var(--ember-2) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 90% at 50% 50%, var(--ember-3) 0%, transparent 80%),
+        var(--ember-base);
+    }
+    .bg-fixed::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 100% 100% at 50% 40%, transparent 38%, rgba(10,2,0,0.55) 100%);
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(10,2,0,0.45) 100%);
-      pointer-events: none;
+    .page { position: relative; z-index: 1; }
+    .shell { width: 100%; max-width: 960px; margin-inline: auto; padding-inline: 24px; }
+    .shell-narrow { max-width: 720px; }
+
+    /* ── Top bar ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, rgba(20,6,3,0.7), rgba(20,6,3,0));
     }
-
-    .wrapper {
-      width: 100%;
-      max-width: 560px;
-      animation: fadeUp 0.8s ease both;
+    .topbar .mark { font-family: var(--font-script); font-size: 1.9rem; color: #fff; line-height: 1; }
+    .topnav { display: flex; gap: 26px; align-items: center; }
+    .topnav a {
+      font-size: var(--fs-eyebrow); letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text-muted); text-decoration: none; transition: color var(--t-base);
     }
+    .topnav a:hover { color: var(--gold-light); }
+    .topnav a.cta { color: var(--gold); border: 1px solid var(--gold); padding: 9px 16px; border-radius: var(--radius); }
+    .topnav a.cta:hover { color: var(--text-invert); background: var(--gold); }
+    @media (max-width: 680px) { .topnav .nav-link { display: none; } }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ── Hero ── */
+    .hero { text-align: center; padding: 64px 24px 80px; }
+    .hero .script { font-size: clamp(4.5rem, 16vw, 8.5rem); display: block; margin: 18px 0 4px; }
+    .hero .kicker { margin-bottom: 22px; }
+    .hero h1 { margin: 0 auto 18px; max-width: 18ch; }
+    .hero .lead { color: var(--text-muted); font-size: 0.92rem; line-height: 1.7; max-width: 46ch; margin: 0 auto 34px; }
+    .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .hero-cta .btn { width: auto; padding-inline: 30px; }
+
+    .scroll-cue { margin-top: 56px; display: inline-flex; flex-direction: column; align-items: center; gap: 8px; color: var(--text-faint); }
+    .scroll-cue .dot { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); animation: bob 1.8s var(--ease) infinite; }
+    @keyframes bob { 0%,100%{ transform: rotate(45deg) translateY(0);} 50%{ transform: rotate(45deg) translateY(6px);} }
+
+    /* ── Section scaffolding ── */
+    section { padding: 64px 0; }
+    .sec-head { text-align: center; margin-bottom: 44px; }
+    .sec-head .eyebrow { display: block; margin-bottom: 10px; }
+    .sec-head .h2 { margin-bottom: 0; }
+
+    /* ── Countdown ── */
+    .countdown { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .cd-cell {
+      min-width: 92px; padding: 20px 12px 16px; text-align: center;
+      border: 1px solid var(--card-border); border-radius: var(--radius-lg);
+      background: var(--card-bg); backdrop-filter: blur(6px);
     }
+    .cd-num { font-family: var(--font-display); font-size: 2.6rem; font-weight: 300; color: var(--gold-light); line-height: 1; }
+    .cd-lab { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-top: 8px; }
 
-    /* ── HEADER ── */
-    .header {
-      text-align: center;
-      margin-bottom: 36px;
-    }
+    /* ── Event card ── */
+    .event-card { display: grid; grid-template-columns: 1.1fr 1fr; gap: 0; overflow: hidden; padding: 0; }
+    .event-poster { min-height: 280px; }
+    .event-body { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+    .event-date { font-family: var(--font-display); font-size: clamp(2.4rem,6vw,3.4rem); font-weight: 300; color: var(--text); line-height: 1; margin-bottom: 6px; }
+    .event-date em { color: var(--gold-light); font-style: italic; }
+    .event-meta { display: flex; flex-direction: column; gap: 12px; margin: 22px 0 28px; }
+    .event-meta .mrow { display: flex; gap: 12px; align-items: baseline; font-size: 0.86rem; }
+    .event-meta .mrow .ico { color: var(--gold); transform: rotate(45deg); width: 6px; height: 6px; background: var(--gold); flex-shrink: 0; margin-top: 7px; }
+    .event-meta .mrow .lbl { color: var(--text-muted); font-size: var(--fs-eyebrow); letter-spacing: 0.14em; text-transform: uppercase; width: 64px; flex-shrink: 0; }
+    .event-meta .mrow .val { color: var(--text); }
+    @media (max-width: 640px) { .event-card { grid-template-columns: 1fr; } .event-poster { min-height: 200px; } .event-body { padding: 28px; } }
 
-    .ornament-top {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .orn-line {
-      height: 1px;
-      width: 36px;
-      background: linear-gradient(90deg, transparent, var(--gold));
-    }
-    .orn-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
-
-    .orn-diamond {
-      width: 6px; height: 6px;
-      background: var(--gold);
-      transform: rotate(45deg);
-      flex-shrink: 0;
-    }
-
-    .logo-script {
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(3.5rem, 10vw, 5.5rem);
-      color: #ffffff;
-      line-height: 1;
-      letter-spacing: 0.02em;
-      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .logo-date {
-      font-size: 0.7rem;
-      letter-spacing: 0.28em;
-      color: var(--gold-light);
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    .header h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 6vw, 3rem);
-      font-weight: 300;
-      letter-spacing: 0.04em;
-      color: var(--text);
-      line-height: 1.1;
-      margin-bottom: 10px;
-    }
-
-    .header h1 em {
-      font-style: italic;
-      color: var(--gold-light);
-    }
-
-    .header p {
-      font-size: 0.68rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(200,180,160,0.7);
-    }
-
-    /* ── CARD ── */
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 40px 40px 36px;
-      position: relative;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,180,100,0.08);
-    }
-
-    /* ── FORM ── */
-    .form-group { margin-bottom: 24px; }
-
-    label {
-      display: block;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      transition: color 0.2s;
-    }
-
-    .form-group:focus-within label { color: var(--gold-light); }
-
-    input[type="text"],
-    input[type="email"],
-    textarea {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      color: var(--text);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      outline: none;
-      transition: border-color 0.25s, background 0.25s;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    textarea:focus {
-      border-color: var(--input-focus);
-      background: rgba(30,10,5,0.8);
-    }
-
-    input::placeholder,
-    textarea::placeholder { color: rgba(160,130,110,0.5); }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    /* ── SECTION DIVIDER ── */
-    .section-divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 28px 0 20px;
-    }
-
-    .section-divider-line {
-      flex: 1;
-      height: 1px;
-      background: var(--card-border);
-    }
-
-    .section-title {
-      font-size: 0.63rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      white-space: nowrap;
-    }
-
-    /* ── ACCESS OPTIONS ── */
-    .access-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .access-option { position: relative; }
-
-    .access-option input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      width: 0; height: 0;
-    }
-
-    .access-option label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 22px 12px;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      cursor: pointer;
-      text-transform: none;
-      letter-spacing: 0.03em;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      transition: all 0.25s;
-      text-align: center;
-      line-height: 1.3;
-      user-select: none;
-      background: rgba(10,3,1,0.3);
-    }
-
-    .access-option label .icon {
-      font-size: 1.6rem;
-      line-height: 1;
-    }
-
-    .access-option label .opt-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: var(--text);
-      display: block;
-    }
-
-    .access-option label .opt-sub {
-      font-size: 0.67rem;
-      letter-spacing: 0.05em;
-      display: block;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .access-option input[type="radio"]:checked + label {
-      border-color: rgba(180,90,40,0.7);
-      background: rgba(120,40,10,0.3);
-    }
-
-    .access-option input[type="radio"]:checked + label .opt-title {
-      color: var(--gold-light);
-    }
-
-    .access-option label:hover {
-      border-color: rgba(180,90,40,0.5);
-      color: var(--text);
-    }
-
-    /* ── TAVOLO NOTICE BANNER ── */
-    .tavolo-notice {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: rgba(120, 40, 10, 0.5);
-      border: 1px solid rgba(180, 80, 30, 0.4);
-      border-radius: var(--radius);
-      padding: 14px 18px;
-      margin-bottom: 4px;
-    }
-
-    .tavolo-notice .notice-icon {
-      font-size: 1.4rem;
-      flex-shrink: 0;
-      color: var(--gold-light);
-      width: 28px;
-      height: 28px;
-      border: 1.5px solid var(--gold);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-    }
-
-    .tavolo-notice p {
-      font-size: 0.78rem;
-      color: rgba(220,200,180,0.9);
-      line-height: 1.5;
-      letter-spacing: 0.02em;
-    }
-
-    .tavolo-notice p strong {
-      color: var(--orange-light);
-      font-weight: 500;
-    }
-
-    /* ── QUANTITY ── */
-    .quantity-group {
-      margin-top: 20px;
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transform: translateY(-8px);
-      transition: max-height 0.4s ease, opacity 0.35s ease, transform 0.35s ease, margin-top 0.3s ease;
-    }
-
-    .quantity-group.visible {
-      max-height: 200px;
-      opacity: 1;
-      transform: translateY(0);
-      margin-top: 16px;
-    }
-
-    .quantity-inner {
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      padding: 18px;
-      background: rgba(10,3,1,0.4);
-    }
-
-    .quantity-inner label {
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    .qty-input-row {
-      display: flex;
-      align-items: center;
-    }
-
-    .qty-btn {
-      width: 38px; height: 38px;
-      background: transparent;
-      border: 1px solid var(--card-border);
-      color: var(--gold);
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s, border-color 0.2s;
-      flex-shrink: 0;
-    }
-
-    .qty-btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
-    .qty-btn:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
-    .qty-btn:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); }
-
-    #qty-display {
-      flex: 1;
-      text-align: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--text);
-      border: 1px solid var(--card-border);
-      border-left: none; border-right: none;
-      height: 38px;
-      line-height: 38px;
-      background: transparent;
-    }
-
-    .qty-note {
-      margin-top: 10px;
-      font-size: 0.67rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    .qty-note span { color: var(--gold); }
-
-    /* ── SUBMIT ── */
-    .submit-area { margin-top: 28px; }
-
-    .btn-submit {
-      width: 100%;
-      padding: 16px;
-      background: transparent;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-radius: var(--radius);
-      position: relative;
-      overflow: hidden;
-      transition: color 0.3s;
-    }
-
-    .btn-submit::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--gold);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s ease;
-    }
-
-    .btn-submit:hover::before { transform: scaleX(1); }
-    .btn-submit:hover { color: #1a0800; }
-    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-submit:disabled::before { transform: scaleX(0) !important; }
-    .btn-submit span { position: relative; z-index: 1; }
-
-    /* ── SUCCESS OVERLAY ── */
-    .success-overlay {
-      position: fixed;
-      inset: 0;
+    /* ── Image placeholder ── */
+    .ph {
       background:
-        radial-gradient(ellipse 90% 70% at 30% 20%, #b84010 0%, transparent 60%),
-        radial-gradient(ellipse 70% 80% at 80% 60%, #7a1a05 0%, transparent 60%),
-        #3a0a05;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
+        repeating-linear-gradient(45deg, rgba(201,168,76,0.07) 0 10px, rgba(201,168,76,0.02) 10px 20px);
+      border: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      color: var(--text-faint); font-family: ui-monospace, Menlo, monospace;
+      font-size: 0.62rem; letter-spacing: 0.08em; padding: 12px;
     }
 
-    .success-overlay.show {
-      opacity: 1;
-      pointer-events: all;
+    /* ── Galleries ── */
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+    .gal-card { overflow: hidden; padding: 0; display: flex; flex-direction: column; transition: border-color var(--t-base), transform var(--t-base); }
+    .gal-card:hover { border-color: rgba(180,90,40,0.6); transform: translateY(-3px); }
+    .gal-thumb { aspect-ratio: 4/3; }
+    .gal-info { padding: 16px 18px 18px; }
+    .gal-info .g-name { font-family: var(--font-display); font-size: 1.15rem; color: var(--text); letter-spacing: 0.03em; }
+    .gal-info .g-date { font-size: var(--fs-eyebrow); letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+    .gal-link {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+      font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold); text-decoration: none; transition: gap var(--t-base);
     }
+    .gal-link:hover { gap: 12px; }
+    .gal-link.soon { color: var(--text-faint); pointer-events: none; }
 
-    .success-diamond {
-      width: 80px;
-      height: 80px;
-      border: 1px solid rgba(201,168,76,0.5);
-      transform: rotate(45deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 2rem;
-      position: relative;
+    /* ── Staff ── */
+    .staff-groups { display: grid; gap: 36px; }
+    .staff-role-label { text-align: center; margin-bottom: 22px; }
+    .staff-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .person { text-align: center; width: 150px; }
+    .person .avatar {
+      width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 14px;
+      border: 1px solid var(--card-border); overflow: hidden;
     }
+    .person .p-name { font-family: var(--font-display); font-size: 1.2rem; color: var(--text); letter-spacing: 0.02em; }
+    .person .p-role { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light); margin-top: 4px; }
 
-    .success-diamond::before {
-      content: '';
-      position: absolute;
-      inset: 6px;
-      border: 1px solid rgba(201,168,76,0.25);
-    }
+    /* ── Info pratiche ── */
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+    .info-card { padding: 28px 26px; }
+    .info-card .i-num { font-family: var(--font-display); font-size: 1.6rem; color: var(--gold-light); margin-bottom: 10px; }
+    .info-card .i-title { font-family: var(--font-display); font-size: 1.25rem; color: var(--text); margin-bottom: 8px; letter-spacing: 0.02em; }
+    .info-card .i-text { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
 
-    .success-diamond-inner {
-      transform: rotate(-45deg);
-      font-size: 1.6rem;
-    }
-
-    .success-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.8rem, 6vw, 2.6rem);
-      font-weight: 300;
-      color: var(--text);
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-    }
-
-    .success-title em {
-      color: var(--gold-light);
-      font-style: italic;
-    }
-
-    .success-subtitle {
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-    }
-
-    .success-detail {
-      border: 1px solid rgba(180,100,50,0.35);
-      border-radius: var(--radius);
-      padding: 1.2rem 2rem;
-      color: var(--text);
-      font-size: 0.82rem;
-      line-height: 2;
-      backdrop-filter: blur(6px);
-      background: rgba(28,12,8,0.5);
-      max-width: 320px;
-      width: 100%;
-      margin-bottom: 2rem;
-    }
-
-    .success-detail strong {
-      color: var(--gold-light);
-      font-weight: 500;
-    }
-
-    .success-new-btn {
-      padding: 14px 2rem;
-      border: 1px solid var(--gold);
-      border-radius: var(--radius);
-      background: transparent;
-      color: var(--gold);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .success-new-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--gold);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s ease;
-    }
-
-    .success-new-btn:hover::before { transform: scaleX(1); }
-    .success-new-btn:hover { color: #1a0800; }
-    .success-new-btn span { position: relative; z-index: 1; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 480px) {
-      .card { padding: 24px 18px 28px; }
-      .row { grid-template-columns: 1fr; gap: 0; }
-      .row .form-group:first-child { margin-bottom: 24px; }
-      .access-options { grid-template-columns: 1fr; gap: 10px; }
-      input[type="text"],
-      input[type="email"],
-      textarea { font-size: 16px; }
-      .qty-btn { width: 44px; height: 44px; }
-      #qty-display { height: 44px; line-height: 44px; }
-      .btn-submit { padding: 18px; }
-      .logo-script { font-size: 3rem; }
-    }
+    /* ── Final CTA + footer ── */
+    .final-cta { text-align: center; padding: 80px 24px; }
+    .final-cta .h2 { margin-bottom: 14px; }
+    .final-cta .lead { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; max-width: 40ch; margin: 0 auto 30px; }
+    .final-cta .btn { width: auto; padding-inline: 36px; }
+    footer { text-align: center; padding: 40px 24px; border-top: 1px solid rgba(180,100,50,0.18); }
+    footer .mark { font-family: var(--font-script); font-size: 2.2rem; color: #fff; }
+    footer .f-meta { font-size: var(--fs-eyebrow); letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-faint); margin-top: 8px; }
   </style>
 </head>
-<body>
+<body class="mirage-bg home">
+<div class="bg-fixed"></div>
 
-<div class="wrapper">
+<div class="page">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="ornament-top">
-      <div class="orn-line"></div>
-      <div class="orn-diamond"></div>
-      <div class="orn-line r"></div>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <a href="#top" class="mark" style="text-decoration:none;">Mirage</a>
+    <nav class="topnav">
+      <a href="#evento" class="nav-link">Evento</a>
+      <a href="#gallerie" class="nav-link">Gallerie</a>
+      <a href="#staff" class="nav-link">Staff</a>
+      <a href="#info" class="nav-link">Info</a>
+      <a href="form.html" class="cta">Registrati</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="shell">
+      <div class="ornament">
+        <div class="orn-line"></div><div class="orn-diamond"></div><div class="orn-line r"></div>
+      </div>
+      <span class="script">Mirage</span>
+      <div class="eyebrow kicker">Bar Incontri · Bologna</div>
+      <h1 class="h1">Una notte sospesa tra <em>luce</em> e desiderio</h1>
+      <p class="lead">Mirage torna a Bologna. Una serata curata nei dettagli, tra musica, atmosfera e incontri. Il prossimo appuntamento è il 19 giugno.</p>
+      <div class="hero-cta">
+        <a href="#evento" class="btn"><span>Scopri il prossimo evento</span></a>
+        <a href="form.html" class="btn btn-ghost"><span>Registrati</span></a>
+      </div>
+      <a href="#evento" class="scroll-cue" style="text-decoration:none;">
+        <span class="eyebrow muted">Scorri</span>
+        <span class="dot"></span>
+      </a>
     </div>
-    <span class="logo-script">Mirage</span>
-    <div class="logo-date">29.05.2026</div>
-    <h1>Registrazione <em>Evento</em></h1>
-    <p>Compila il modulo per confermare la tua presenza</p>
-  </div>
+  </header>
 
-  <!-- CARD -->
-  <div class="card">
-    <form id="reg-form" novalidate>
-
-      <!-- NOME / COGNOME -->
-      <div class="row">
-        <div class="form-group">
-          <label for="nome">Nome</label>
-          <input type="text" id="nome" placeholder="Mario" required />
-        </div>
-        <div class="form-group">
-          <label for="cognome">Cognome</label>
-          <input type="text" id="cognome" placeholder="Rossi" required />
-        </div>
+  <!-- EVENTO + COUNTDOWN -->
+  <section id="evento">
+    <div class="shell">
+      <div class="sec-head">
+        <span class="eyebrow">01 — Il prossimo evento</span>
+        <div class="h2">Manca poco</div>
       </div>
 
-      <!-- MAIL -->
-      <div class="form-group">
-        <label for="email">Mail</label>
-        <input type="email" id="email" placeholder="nome@email.com" />
+      <div class="countdown" id="countdown" style="margin-bottom:44px;">
+        <div class="cd-cell"><div class="cd-num" data-cd="d">--</div><div class="cd-lab">Giorni</div></div>
+        <div class="cd-cell"><div class="cd-num" data-cd="h">--</div><div class="cd-lab">Ore</div></div>
+        <div class="cd-cell"><div class="cd-num" data-cd="m">--</div><div class="cd-lab">Minuti</div></div>
+        <div class="cd-cell"><div class="cd-num" data-cd="s">--</div><div class="cd-lab">Secondi</div></div>
       </div>
 
-      <!-- SECTION TITLE -->
-      <div class="section-divider">
-        <div class="section-divider-line"></div>
-        <span class="section-title">Modalità d'ingresso</span>
-        <div class="section-divider-line"></div>
-      </div>
-
-      <!-- OPTIONS -->
-      <div class="access-options">
-        <div class="access-option">
-          <input type="radio" name="ingresso" id="opt-tavolo" value="tavolo" />
-          <label for="opt-tavolo">
-            <span class="icon">🍽️</span>
-            <span class="opt-title">Con Tavolo</span>
-            <span class="opt-sub">Ingresso con prenotazione tavolo</span>
-          </label>
-        </div>
-        <div class="access-option">
-          <input type="radio" name="ingresso" id="opt-semplice" value="semplice" />
-          <label for="opt-semplice">
-            <span class="icon">🎟️</span>
-            <span class="opt-title">Semplice</span>
-            <span class="opt-sub">Ingresso libero senza tavolo</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- NOTICE BANNER -->
-      <div class="tavolo-notice">
-        <div class="notice-icon">🕐</div>
-        <p>Il tavolo è riservato esclusivamente agli ospiti che arriveranno <strong>entro le 21:00.</strong></p>
-      </div>
-
-      <!-- QUANTITY (hidden until option selected) -->
-      <div class="quantity-group" id="qty-group">
-        <div class="quantity-inner">
-          <label>Quanti siete?</label>
-          <div class="qty-input-row">
-            <button type="button" class="qty-btn" id="qty-minus">−</button>
-            <div id="qty-display">1</div>
-            <button type="button" class="qty-btn" id="qty-plus">+</button>
+      <div class="card event-card">
+        <div class="ph event-poster">[ locandina evento · 4:5 ]</div>
+        <div class="event-body">
+          <div class="eyebrow" style="margin-bottom:12px;">Giovedì</div>
+          <div class="event-date">19 <em>Giugno</em></div>
+          <div class="event-meta">
+            <div class="mrow"><span class="ico"></span><span class="lbl">Dove</span><span class="val">Bar Incontri</span></div>
+            <div class="mrow"><span class="ico"></span><span class="lbl">Città</span><span class="val">Bologna</span></div>
+            <div class="mrow"><span class="ico"></span><span class="lbl">Tavoli</span><span class="val">Riservati fino alle 21:00</span></div>
           </div>
-          <p class="qty-note">
-            <span>*</span> La registrazione effettuata è valida per il numero di persone indicate.
-          </p>
+          <a href="form.html" class="btn"><span>Conferma la tua presenza</span></a>
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- NOTE -->
-      <div class="section-divider">
-        <div class="section-divider-line"></div>
-        <span class="section-title">Note</span>
-        <div class="section-divider-line"></div>
+  <!-- GALLERIE / DRIVE -->
+  <section id="gallerie">
+    <div class="shell">
+      <div class="sec-head">
+        <span class="eyebrow">02 — Gallerie</span>
+        <div class="h2">Le serate <em>passate</em></div>
       </div>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+  </section>
 
-      <div class="form-group" style="margin-bottom: 0;">
-        <textarea id="note" placeholder="Eventuali richieste o informazioni aggiuntive…"></textarea>
+  <!-- STAFF -->
+  <section id="staff">
+    <div class="shell">
+      <div class="sec-head">
+        <span class="eyebrow">03 — Lo staff</span>
+        <div class="h2">Chi c'è <em>dietro</em></div>
       </div>
+      <div class="staff-groups" id="staff-groups"></div>
+    </div>
+  </section>
 
-      <!-- SUBMIT -->
-      <div class="submit-area">
-        <button type="submit" class="btn-submit" id="btn-submit">
-          <span id="btn-label">Conferma Registrazione</span>
-        </button>
+  <!-- INFO PRATICHE -->
+  <section id="info">
+    <div class="shell">
+      <div class="sec-head">
+        <span class="eyebrow">04 — Info pratiche</span>
+        <div class="h2">Da sapere</div>
       </div>
+      <div class="info-grid">
+        <div class="card info-card">
+          <div class="i-num">21:00</div>
+          <div class="i-title">Tavoli</div>
+          <div class="i-text">Il tavolo è riservato esclusivamente agli ospiti che arriveranno entro le 21:00.</div>
+        </div>
+        <div class="card info-card">
+          <div class="i-num">✦</div>
+          <div class="i-title">Ingresso</div>
+          <div class="i-text">Due modalità: con prenotazione tavolo oppure ingresso libero. Scegli in fase di registrazione.</div>
+        </div>
+        <div class="card info-card">
+          <div class="i-num">↗</div>
+          <div class="i-title">Registrazione</div>
+          <div class="i-text">La conferma è valida per il numero di persone indicate nel modulo. Registrati in anticipo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    </form>
-
+  <!-- FINAL CTA -->
+  <div class="final-cta">
+    <div class="shell shell-narrow">
+      <div class="ornament">
+        <div class="orn-line"></div><div class="orn-diamond"></div><div class="orn-line r"></div>
+      </div>
+      <div class="h2" style="margin-top:14px;">Ci vediamo a <em>Bologna</em></div>
+      <p class="lead">Posti limitati. Conferma la tua presenza per assicurarti l'ingresso e, se vuoi, il tavolo.</p>
+      <a href="form.html" class="btn"><span>Registrati all'evento</span></a>
+    </div>
   </div>
-</div>
 
-<!-- SUCCESS OVERLAY -->
-<div class="success-overlay" id="success-overlay">
-  <div class="success-diamond">
-    <div class="success-diamond-inner">✦</div>
-  </div>
-  <div class="success-title">Registrazione<br><em>Confermata</em></div>
-  <div class="success-subtitle">La tua presenza è stata registrata</div>
-  <div class="success-detail" id="success-detail"></div>
-  <button class="success-new-btn" id="success-new-btn">
-    <span>+ Nuova Registrazione</span>
-  </button>
+  <!-- FOOTER -->
+  <footer>
+    <div class="mark">Mirage</div>
+    <div class="f-meta">Bar Incontri · Bologna · 19.06.2026</div>
+  </footer>
+
 </div>
 
 <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhOQ3AmhwsEcnmVVTHNlu9mGNDb_iOARD8a_oH773aibYnSgg7Qg6Z41AFr30s88Iz/exec';
+  /* ════════════════════════════════════════════════════════════════════
+     GALLERIE — per aggiungere un evento, inserisci una riga in questo array.
+     Quando hai il link Drive, sostituisci drive:'' con l'URL completo.
+     ════════════════════════════════════════════════════════════════════ */
+  const GALLERIE = [
+    { nome: 'Mirage Vol. I',  data: '29 Maggio 2026', drive: '' },
+    { nome: 'Anteprima',      data: 'Aprile 2026',    drive: '' },
+    { nome: 'Opening Night',  data: 'Marzo 2026',     drive: '' },
+    // { nome: 'Nuovo Evento', data: 'Mese Anno', drive: 'https://drive.google.com/...' },
+  ];
 
-  const radios   = document.querySelectorAll('input[name="ingresso"]');
-  const qtyGroup = document.getElementById('qty-group');
-  const qtyMinus = document.getElementById('qty-minus');
-  const qtyPlus  = document.getElementById('qty-plus');
-  const qtyDisp  = document.getElementById('qty-display');
-  const btnSubmit = document.getElementById('btn-submit');
-  const btnLabel  = document.getElementById('btn-label');
-  let qty = 1;
+  document.getElementById('gallery-grid').innerHTML = GALLERIE.map(g => {
+    const link = g.drive
+      ? `<a class="gal-link" href="${g.drive}" target="_blank" rel="noopener">Apri su Drive →</a>`
+      : `<span class="gal-link soon">Foto in arrivo</span>`;
+    return `<div class="card gal-card">
+      <div class="ph gal-thumb">[ foto · ${g.nome} ]</div>
+      <div class="gal-info">
+        <div class="g-name">${g.nome}</div>
+        <div class="g-date">${g.data}</div>
+        ${link}
+      </div>
+    </div>`;
+  }).join('');
 
-  radios.forEach(r => r.addEventListener('change', () => qtyGroup.classList.add('visible')));
+  /* ════════════════════════════════════════════════════════════════════
+     STAFF — raggruppato per ruolo. Aggiungi persone o ruoli liberamente.
+     ════════════════════════════════════════════════════════════════════ */
+  const STAFF = [
+    { ruolo: 'Organizzatori', persone: ['Alessio Giacometti', 'Enrico Zappoli'] },
+    { ruolo: 'DJ',            persone: ['Pappaleo'] },
+    { ruolo: 'Photo & Social',persone: ['Miriam'] },
+  ];
 
-  qtyMinus.addEventListener('click', () => { if (qty > 1)  { qty--; qtyDisp.textContent = qty; } });
-  qtyPlus.addEventListener('click',  () => { if (qty < 99) { qty++; qtyDisp.textContent = qty; } });
+  document.getElementById('staff-groups').innerHTML = STAFF.map(group => {
+    const people = group.persone.map(name => `
+      <div class="person">
+        <div class="ph avatar">[ ${name.split(' ')[0]} ]</div>
+        <div class="p-name">${name}</div>
+        <div class="p-role">${group.ruolo}</div>
+      </div>`).join('');
+    return `<div class="staff-group">
+      <div class="staff-role-label"><span class="section-title">${group.ruolo}</span></div>
+      <div class="staff-row">${people}</div>
+    </div>`;
+  }).join('');
 
-  document.getElementById('reg-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const nome     = document.getElementById('nome').value.trim();
-    const cognome  = document.getElementById('cognome').value.trim();
-    const email    = document.getElementById('email').value.trim();
-    const note     = document.getElementById('note').value.trim();
-    const ingressoEl = document.querySelector('input[name="ingresso"]:checked');
-
-    if (!nome || !cognome) { alert('Per favore, inserisci nome e cognome.'); return; }
-    if (!ingressoEl) { alert("Per favore, seleziona la modalità d'ingresso."); return; }
-
-    const tipoIngresso = ingressoEl.value === 'tavolo' ? 'con tavolo' : 'semplice';
-    const tipoSheet    = ingressoEl.value === 'tavolo' ? 'tavolo' : 'lista';
-    btnSubmit.disabled = true;
-    btnLabel.textContent = 'Invio in corso…';
-
-    try {
-      const formData = new FormData();
-      formData.append('nome',       nome);
-      formData.append('cognome',    cognome);
-      formData.append('email',      email);
-      formData.append('tipo',       tipoSheet);
-      formData.append('qty',        qty);
-      formData.append('note',       note);
-
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode:   'no-cors',
-        body:   formData
-      });
-    } catch (err) { console.warn(err); }
-
-    document.getElementById('success-detail').innerHTML =
-      `<strong>Nome:</strong> ${nome} ${cognome}<br>` +
-      `<strong>Ingresso:</strong> ${tipoIngresso}<br>` +
-      `<strong>Persone:</strong> ${qty}`;
-
-    document.getElementById('success-overlay').classList.add('show');
-    btnSubmit.disabled = false;
-    btnLabel.textContent = 'Conferma Registrazione';
-  });
-
-  document.getElementById('success-new-btn').addEventListener('click', function() {
-    document.getElementById('success-overlay').classList.remove('show');
-    document.getElementById('reg-form').reset();
-    qty = 1;
-    qtyDisp.textContent = qty;
-    qtyGroup.classList.remove('visible');
-  });
+  /* ════════════════════════════════════════════════════════════════════
+     COUNTDOWN — data target dell'evento.
+     ════════════════════════════════════════════════════════════════════ */
+  const TARGET = new Date('2026-06-19T20:00:00').getTime();
+  const cd = {
+    d: document.querySelector('[data-cd="d"]'),
+    h: document.querySelector('[data-cd="h"]'),
+    m: document.querySelector('[data-cd="m"]'),
+    s: document.querySelector('[data-cd="s"]'),
+  };
+  const pad = n => String(n).padStart(2, '0');
+  function tick() {
+    const diff = TARGET - Date.now();
+    if (diff <= 0) {
+      cd.d.textContent = cd.h.textContent = cd.m.textContent = cd.s.textContent = '00';
+      return;
+    }
+    const dd = Math.floor(diff / 86400000);
+    const hh = Math.floor(diff % 86400000 / 3600000);
+    const mm = Math.floor(diff % 3600000 / 60000);
+    const ss = Math.floor(diff % 60000 / 1000);
+    cd.d.textContent = pad(dd);
+    cd.h.textContent = pad(hh);
+    cd.m.textContent = pad(mm);
+    cd.s.textContent = pad(ss);
+  }
+  tick();
+  setInterval(tick, 1000);
 </script>
 
 </body>
